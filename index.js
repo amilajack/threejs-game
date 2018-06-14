@@ -1,13 +1,12 @@
 import * as THREE from 'three/build/three.module.js';
 import WindowResize from 'threejs-window-resize';
-import './OrbitControls';
 
 // Scene configuration
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 
 // Renderer configuration
-const renderer = new THREE.WebGLRenderer();
+const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
@@ -42,18 +41,28 @@ scene.add( new THREE.AxesHelper( 20 ) );
 // Camera position
 camera.position.z = 5;
 
-// Orbit controls
-const controls = new THREE.OrbitControls(camera, renderer.domElement);
-controls.addEventListener('change', () => {
-	renderer.render(scene, camera);
-});
-
 WindowResize(renderer, camera);
+
+const ySpeed = 0.1;
+
+function onDocumentKeyDown(event) {
+  switch (event.keyCode) {
+    case 38: {
+      cube.position.y += 0.1;
+      break;
+    }
+    case 40: {
+      cube.position.y -= ySpeed;
+      break;
+    }
+  }
+};
+
+document.addEventListener("keydown", onDocumentKeyDown, false);
 
 // Render loop
 function animate() {
-	controls.update()
-    cube.rotation.x += 0.05;
+  cube.rotation.x += 0.05;
 	requestAnimationFrame( animate );
 	renderer.render( scene, camera );
 }
