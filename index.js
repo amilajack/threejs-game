@@ -1,29 +1,37 @@
 import * as THREE from 'three/build/three.module.js';
 import WindowResize from 'threejs-window-resize';
+import './OrbitControls';
 
-// Scene configuration
+// Scene
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 50);
 
-// Renderer configuration
+// Renderer
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
+renderer.setPixelRatio( window.devicePixelRatio );
 
+// Shadow
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+// Gamma
 renderer.gammaInput = true;
 renderer.gammaOutput = true;
 
-// Drawing an object to the scene
-const geometry = new THREE.BoxGeometry( 1, 1, 1 );
-const material = new THREE.MeshBasicMaterial({
-	color: 0x00ff00,
-	wireframe: true
+// Orbit controls
+const controls = new THREE.OrbitControls(camera, renderer.domElement);
+controls.addEventListener('change', () => {
+	renderer.render(scene, camera);
 });
-const boxMaterial = new THREE.MeshLambertMaterial({
-	color: 0xAAAAAA
-})
+
+// Drawing an object to the scene
+const geometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
+const boxMaterial = new THREE.MeshLambertMaterial()
+const cube = new THREE.Mesh( geometry,  boxMaterial);
+cube.position.set(0, 0, 0)
+scene.add(cube);
 
 // Add lights
 const light = new THREE.AmbientLight(0xFFFFFF, 0.5)
@@ -33,37 +41,60 @@ const light2 = new THREE.PointLight(0xAFAFAF, 0.9)
 light2.position.set(0, 0, 10)
 scene.add(light2)
 
-const cube = new THREE.Mesh( geometry,  boxMaterial);
-cube.position.set(0, 0, 0)
-scene.add(cube);
-scene.add( new THREE.AxesHelper( 20 ) );
-
 // Camera position
-camera.position.z = 5;
+camera.position.z = 50;
 
-WindowResize(renderer, camera);
+var axesHelper = new THREE.AxesHelper( 5 );
+scene.add( axesHelper );
 
-const ySpeed = 0.1;
 
-function onDocumentKeyDown(event) {
-  switch (event.keyCode) {
-    case 38: {
-      cube.position.y += 0.1;
-      break;
+function initKeyboardInteraction() {
+  const deltaPosition = 1;
+
+  function onDocumentKeyDown(event) {
+    console.log(event)
+    switch (event.code) {
+      case 'ArrowUp': {
+        cube.position.y += deltaPosition;
+        break;
+      }
+      case 'ArrowDown': {
+        cube.position.y -= deltaPosition;
+        break;
+      }
+      case 'ArrowLeft': {
+        cube.position.x -= deltaPosition;
+        break;
+      }
+      case 'ArrowRight': {
+        cube.position.x += deltaPosition;
+        break;
+      }
     }
-    case 40: {
-      cube.position.y -= ySpeed;
-      break;
-    }
-  }
-};
+  };
 
-document.addEventListener("keydown", onDocumentKeyDown, false);
+  document.addEventListener("keydown", onDocumentKeyDown, false);
+}
+
+let t = 0;
 
 // Render loop
 function animate() {
-  cube.rotation.x += 0.05;
+  t++
+  cube.position.x += 0.05;
+  camera.lookAt(cube.position)
+  if (cube.position.y > -1) {
+    const yPosition = -9*0.001*(t**2) + 1*t
+    cube.position.y = yPosition
+  } else {
+    cube.position.y = 1
+    t = 0
+    cube.position.x = 0
+  }
 	requestAnimationFrame( animate );
 	renderer.render( scene, camera );
 }
+
 animate();
+initKeyboardInteraction();
+WindowResize(renderer, camera);
