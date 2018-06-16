@@ -1,6 +1,6 @@
 import * as THREE from 'three/build/three.module.js';
 import WindowResize from 'threejs-window-resize';
-import './OrbitControls';
+const OrbitControls = require('three-orbit-controls')(THREE)
 
 // Scene
 const scene = new THREE.Scene();
@@ -21,7 +21,7 @@ renderer.gammaInput = true;
 renderer.gammaOutput = true;
 
 // Orbit controls
-const controls = new THREE.OrbitControls(camera, renderer.domElement);
+const controls = new OrbitControls(camera, renderer.domElement);
 controls.addEventListener('change', () => {
 	renderer.render(scene, camera);
 });
@@ -36,7 +36,6 @@ scene.add(cube);
 // Add lights
 const light = new THREE.AmbientLight(0xFFFFFF, 0.5)
 scene.add(light)
-
 const light2 = new THREE.PointLight(0xAFAFAF, 0.9)
 light2.position.set(0, 0, 10)
 scene.add(light2)
