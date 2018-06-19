@@ -1,6 +1,8 @@
 import * as THREE from 'three/build/three.module.js';
 import WindowResize from 'threejs-window-resize';
-const OrbitControls = require('three-orbit-controls')(THREE)
+import OrbitControlsFactory from 'three-orbit-controls';
+
+const OrbitControls = OrbitControlsFactory(THREE);
 
 // Scene
 const scene = new THREE.Scene();
@@ -10,7 +12,7 @@ const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerH
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
-renderer.setPixelRatio( window.devicePixelRatio );
+renderer.setPixelRatio(window.devicePixelRatio);
 
 // Shadow
 renderer.shadowMap.enabled = true;
@@ -23,35 +25,33 @@ renderer.gammaOutput = true;
 // Orbit controls
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.addEventListener('change', () => {
-	renderer.render(scene, camera);
+  renderer.render(scene, camera);
 });
 
 // Drawing an object to the scene
 const geometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
-const boxMaterial = new THREE.MeshLambertMaterial()
-const cube = new THREE.Mesh( geometry,  boxMaterial);
-cube.position.set(0, 0, 0)
+const boxMaterial = new THREE.MeshLambertMaterial();
+const cube = new THREE.Mesh(geometry, boxMaterial);
+cube.position.set(0, 0, 0);
 scene.add(cube);
 
 // Add lights
-const light = new THREE.AmbientLight(0xFFFFFF, 0.5)
-scene.add(light)
-const light2 = new THREE.PointLight(0xAFAFAF, 0.9)
-light2.position.set(0, 0, 10)
-scene.add(light2)
+const light = new THREE.AmbientLight(0xFFFFFF, 0.5);
+scene.add(light);
+const light2 = new THREE.PointLight(0xAFAFAF, 0.9);
+light2.position.set(0, 0, 10);
+scene.add(light2);
 
 // Camera position
 camera.position.z = 50;
 
-var axesHelper = new THREE.AxesHelper( 5 );
-scene.add( axesHelper );
-
+const axesHelper = new THREE.AxesHelper(5);
+scene.add(axesHelper);
 
 function initKeyboardInteraction() {
   const deltaPosition = 1;
 
   function onDocumentKeyDown(event) {
-    console.log(event)
     switch (event.code) {
       case 'ArrowUp': {
         cube.position.y += deltaPosition;
@@ -70,28 +70,28 @@ function initKeyboardInteraction() {
         break;
       }
     }
-  };
+  }
 
-  document.addEventListener("keydown", onDocumentKeyDown, false);
+  document.addEventListener('keydown', onDocumentKeyDown, false);
 }
 
 let t = 0;
 
 // Render loop
 function animate() {
-  t++
+  t++;
   cube.position.x += 0.05;
-  camera.lookAt(cube.position)
+  camera.lookAt(cube.position);
   if (cube.position.y > -1) {
-    const yPosition = -9*0.001*(t**2) + 1*t
-    cube.position.y = yPosition
+    const yPosition = -9 * 0.001 * (t ** 2) + 1 * t;
+    cube.position.y = yPosition;
   } else {
-    cube.position.y = 1
-    t = 0
-    cube.position.x = 0
+    cube.position.y = 1;
+    t = 0;
+    cube.position.x = 0;
   }
-	requestAnimationFrame( animate );
-	renderer.render( scene, camera );
+  requestAnimationFrame(animate);
+  renderer.render(scene, camera);
 }
 
 animate();
