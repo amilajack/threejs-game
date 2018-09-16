@@ -25,9 +25,6 @@ renderer.gammaOutput = true;
 
 // Orbit controls
 const controls = new OrbitControls(camera, renderer.domElement);
-controls.addEventListener('change', () => {
-  renderer.render(scene, camera);
-});
 
 // Drawing an object to the scene
 const geometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
@@ -88,7 +85,6 @@ let t = 0;
 function animate() {
   t++;
   cube.position.x += 0.05;
-  camera.lookAt(cube.position);
   if (cube.position.y > -1) {
     const yPosition = -9 * 0.001 * (t ** 2) + 1 * t;
     cube.position.y = yPosition;
@@ -97,6 +93,7 @@ function animate() {
     t = 0;
     cube.position.x = 0;
   }
+  controls.update();
   requestAnimationFrame(animate);
   renderer.render(scene, camera);
   if (process.env.NODE_ENV === 'development') { stats.update(); }
