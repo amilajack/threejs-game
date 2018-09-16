@@ -1,6 +1,7 @@
 import * as THREE from 'three/build/three.module.js';
 import WindowResize from 'threejs-window-resize';
 import OrbitControlsFactory from 'three-orbit-controls';
+import Stats from 'stats.js'
 
 const OrbitControls = OrbitControlsFactory(THREE);
 
@@ -75,6 +76,12 @@ function initKeyboardInteraction() {
   document.addEventListener('keydown', onDocumentKeyDown, false);
 }
 
+// Stats
+const stats = new Stats();
+if (process.env.NODE_ENV === 'development') {
+  document.body.appendChild(stats.dom);
+}
+
 let t = 0;
 
 // Render loop
@@ -92,6 +99,7 @@ function animate() {
   }
   requestAnimationFrame(animate);
   renderer.render(scene, camera);
+  if (process.env.NODE_ENV === 'development') { stats.update(); }
 }
 
 animate();

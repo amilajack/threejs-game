@@ -4,6 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
+    "stats.js": "^0.17.0",
     "three": "^0.93.0",
     "three-orbit-controls": "^82.1.0",
     "threejs-window-resize": "^1.0.1"
