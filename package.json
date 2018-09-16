@@ -5,6 +5,7 @@
   "license": "MIT",
   "dependencies": {
     "three": "^0.95.0",
+    "stats.js": "^0.17.0",
     "three-orbit-controls": "^82.1.0",
     "threejs-window-resize": "^1.0.1"
   },
@@ -12,6 +13,6 @@
     "parcel": "^1.9.0"
   },
   "scripts": {
-    "start": "parcel index.html"
+    "start": "parcel index.html --open"
   }
 }

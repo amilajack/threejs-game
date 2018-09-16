@@ -1,6 +1,7 @@
 import * as THREE from 'three/build/three.module.js';
 import WindowResize from 'threejs-window-resize';
 import OrbitControlsFactory from 'three-orbit-controls';
+import Stats from 'stats.js'
 
 const OrbitControls = OrbitControlsFactory(THREE);
 
@@ -24,9 +25,6 @@ renderer.gammaOutput = true;
 
 // Orbit controls
 const controls = new OrbitControls(camera, renderer.domElement);
-controls.addEventListener('change', () => {
-  renderer.render(scene, camera);
-});
 
 // Drawing an object to the scene
 const geometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
@@ -75,13 +73,18 @@ function initKeyboardInteraction() {
   document.addEventListener('keydown', onDocumentKeyDown, false);
 }
 
+// Stats
+const stats = new Stats();
+if (process.env.NODE_ENV === 'development') {
+  document.body.appendChild(stats.dom);
+}
+
 let t = 0;
 
 // Render loop
 function animate() {
   t++;
   cube.position.x += 0.05;
-  camera.lookAt(cube.position);
   if (cube.position.y > -1) {
     const yPosition = -9 * 0.001 * (t ** 2) + 1 * t;
     cube.position.y = yPosition;
@@ -90,8 +93,10 @@ function animate() {
     t = 0;
     cube.position.x = 0;
   }
+  controls.update();
   requestAnimationFrame(animate);
   renderer.render(scene, camera);
+  if (process.env.NODE_ENV === 'development') { stats.update(); }
 }
 
 animate();
