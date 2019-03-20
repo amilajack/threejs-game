@@ -10,7 +10,7 @@
     "threejs-window-resize": "^1.0.1"
   },
   "devDependencies": {
-    "parcel": "^1.10.2"
+    "parcel": "^1.12.3"
   },
   "scripts": {
     "start": "parcel index.html --open"
